@@ -5,7 +5,7 @@ Controls different trading actions that our AI agents can execute:
 0 - close a position (in chunks)
 1 - open a position (in chunks)
 2 - stop loss: close under X price
-3 - break out: buy over Y price
+3 - break out: buy over Y price (in chunks)
 4 - data bot: get OHLCV data for a solana contract address
 5 - market maker - buy under X price and sell over Y price
 
@@ -16,7 +16,7 @@ not done yet
 '''
 
 from ..core.config import *
-from ..core.utils.nice_funcs import *
+from ..core.utils import nice_funcs as n 
 import time
 from termcolor import colored, cprint
 import schedule
