@@ -1,0 +1,1 @@
+plan is to build really great docs for every single module in a way that ai can read them and learn based on them.

@@ -3,7 +3,7 @@
 The main mission is to build [artificial financial intelligence](https://www.afi.xyz) - a focused version of AGI specifically for trading and investing.
 
 ## 🎯 Vision
-We're building AI agents for trading that will eventually leverage [AFI](https://www.afi.xyz) and our custom trading models. With 4 years of experience training humans to automate their trading through our [bootcamp](https://algotradecamp.com), we understand where AI agents can gain an edge over human limitations.
+We're building AI agents for trading that will eventually leverage [AFI](https://www.afi.xyz). With 4 years of experience training humans to automate their trading through our [bootcamp](https://algotradecamp.com), we understand where AI agents can gain an edge over human limitations.
 
 ## 💡 Key Advantage
 AI agents overcome the biggest challenges that plague human traders:
