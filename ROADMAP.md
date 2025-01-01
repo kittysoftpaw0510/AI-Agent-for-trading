@@ -73,8 +73,10 @@
    - [ ] Add installation guide
 
 ## 🔑 Remember
-- Commit often
+- Commit often (start w/ main and grow to dev if ever needed)
 - Use clear commit messages
 - Test before pushing
 - Document as you go
 - Keep security in mind (no API keys!)
+- make a .gitignore to add .env to
+- new people = new branch
