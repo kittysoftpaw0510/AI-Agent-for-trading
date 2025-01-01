@@ -1,6 +1,20 @@
-BIRDEYE_API_KEY = 
-RPC_ENDPOINT = 
-MOONDEV_API_KEY = 
-SOLANA_PRIVATE_KEY= 
-ANTHROPIC_KEY = 
-OPENAI_KEY = 
+# 🌙 Moon Dev Trading Bot Environment Variables
+# ⚠️ NEVER COMMIT THE ACTUAL .env FILE! THIS IS JUST A TEMPLATE!
+# 🔒 Keep your API keys and secrets safe!
+
+# Trading APIs
+BIRDEYE_API_KEY=your_birdeye_api_key_here        # Get from birdeye.so
+RPC_ENDPOINT=your_rpc_endpoint_here              # Your Solana RPC endpoint
+
+# Moon Dev Specific
+MOONDEV_API_KEY=your_moondev_api_key_here        # For Moon Dev services
+
+# Blockchain
+SOLANA_PRIVATE_KEY=your_solana_private_key_here  # ⚠️ Keep this extremely safe!
+
+# AI Services (Optional)
+ANTHROPIC_KEY=your_anthropic_key_here            # For Claude integration
+OPENAI_KEY=your_openai_key_here                  # For GPT integration
+
+# ⚠️ REMINDER: Never print these values in logs or share them!
+# 🔒 Keep this file as .env.example and create a separate .env with real values 
