@@ -4,8 +4,8 @@ Collects Open-High-Low-Close-Volume data for specified tokens
 Built with love by Moon Dev 🚀
 """
 
-from ..core.config import *
-from ..core.utils.nice_funcs import get_data
+from src.core.config import *
+from src.core.utils import nice_funcs as n
 import pandas as pd
 from datetime import datetime
 import os
@@ -15,7 +15,7 @@ def collect_token_data(token_address, days_back=DAYSBACK_4_DATA, timeframe=DATA_
     """Collect OHLCV data for a specific token"""
     try:
         print(f"🔍 Moon Dev is fetching data for {token_address[-4:]} over {days_back} days...")
-        df = get_data(token_address, days_back, timeframe)
+        df = n.get_data(token_address, days_back, timeframe)
         
         if df is not None and not df.empty:
             # Save to CSV with timestamp

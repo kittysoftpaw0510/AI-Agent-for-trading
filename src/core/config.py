@@ -32,13 +32,23 @@ SLEEP_AFTER_CLOSE = 600  # Prevent overtrading
 DAYSBACK_4_DATA = 10
 DATA_TIMEFRAME = '15m'
 
+# AI Model Settings 🤖
+AI_MODEL = "claude-3-sonnet-20240229"  # Claude model to use
+AI_MAX_TOKENS = 1024  # Max tokens for response
+AI_TEMPERATURE = 0.7  # Creativity vs precision (0-1)
+
+# Token List for Trading 📋
+tokens_to_trade = [
+    '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump',  # Example token
+    # Add more tokens here
+]
+
 # Future variables (not active yet) 🔮
 sell_at_multiple = 3
 USDC_SIZE = 1
 limit = 49
 timeframe = '15m'
 stop_loss_perctentage = -.24
-tokens_to_trade = ['777']
 EXIT_ALL_POSITIONS = False
 DO_NOT_TRADE_LIST = ['777']
 CLOSED_POSITIONS_TXT = '777'

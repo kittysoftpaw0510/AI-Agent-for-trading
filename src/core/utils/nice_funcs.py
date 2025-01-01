@@ -3,7 +3,7 @@
 Built with love by Moon Dev 🚀
 """
 
-from ..config import *
+from src.core.config import *
 import requests
 import pandas as pd
 import pprint
@@ -18,11 +18,15 @@ import pandas_ta as ta
 from datetime import datetime, timedelta
 from termcolor import colored, cprint
 import solders
-import os
-import dontshare as d
+from dotenv import load_dotenv
 
-# API Key from your 'dontshare' file
-API_KEY = d.birdeye
+# Load environment variables
+load_dotenv()
+
+# Get API keys from environment
+API_KEY = os.getenv("BIRDEYE_API_KEY")
+if not API_KEY:
+    raise ValueError("🚨 BIRDEYE_API_KEY not found in environment variables!")
 
 sample_address = "2yXTyarttn2pTZ6cwt4DqmrRuBw1G7pmFv9oT6MStdKP"
 
@@ -209,7 +213,6 @@ def token_creation_info(address):
         print("Failed to retrieve token creation info:", response.status_code)
 
 def market_buy(token, amount, slippage):
-
     import requests
     import sys
     import json
@@ -218,16 +221,18 @@ def market_buy(token, amount, slippage):
     from solders.transaction import VersionedTransaction
     from solana.rpc.api import Client
     from solana.rpc.types import TxOpts
-    import dontshare as d
 
-    KEY = Keypair.from_base58_string(d.sol_key)
+    KEY = Keypair.from_base58_string(os.getenv("SOLANA_PRIVATE_KEY"))
+    if not KEY:
+        raise ValueError("🚨 SOLANA_PRIVATE_KEY not found in environment variables!")
+    
     SLIPPAGE = slippage # 5000 is 50%, 500 is 5% and 50 is .5%
 
-    #QUOTE_TOKEN = "So11111111111111111111111111111111111111112"
     QUOTE_TOKEN = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" # usdc
 
-    #http_client = Client("https://api.mainnet-beta.solana.com")
-    http_client = Client(d.rpc_url)
+    http_client = Client(os.getenv("RPC_ENDPOINT"))
+    if not http_client:
+        raise ValueError("🚨 RPC_ENDPOINT not found in environment variables!")
 
     quote = requests.get(f'https://quote-api.jup.ag/v6/quote?inputMint={QUOTE_TOKEN}&outputMint={token}&amount={amount}&slippageBps={SLIPPAGE}').json()
     #print(quote)
@@ -595,7 +600,6 @@ def pnl_close(token_mint_address):
                 time.sleep(1)
                 market_sell(token_mint_address, sell_size)
                 cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
-                time.sleep(1)
                 time.sleep(15)
 
             except:
