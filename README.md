@@ -1,25 +1,62 @@
-# AI AGENTS FOR TRADING
+# 🤖 AI AGENTS FOR TRADING
 
-the main mission is to build [artificial financial intelligence](https://www.afi.xyz) which is a focused version of agi, for trading and investing. 
+The main mission is to build [artificial financial intelligence](https://www.afi.xyz) - a focused version of AGI specifically for trading and investing.
 
-the first step will be to build ai agents for trading that will eventually leverage [AFI](https://www.afi.xyz) and our custom trading model
+## 🎯 Vision
+We're building AI agents for trading that will eventually leverage [AFI](https://www.afi.xyz) and our custom trading models. With 4 years of experience training humans to automate their trading through our [bootcamp](https://algotradecamp.com), we understand where AI agents can gain an edge over human limitations.
 
-as i have been training humans for the last 4 years on how to automate their trading [here in the bootcamp](https://algotradecamp.com), i know what humans have a hard time with that agents should be able to gain an edge on. 
+## 💡 Key Advantage
+AI agents overcome the biggest challenges that plague human traders:
+- Emotions
+- Ego
+- Inconsistency
+- Fatigue
+- Impatience
+- Fear & Greed
 
-this will all still come down to the strategies that these agents will run, but ai agents will not have the biggest problems that hand trader have which are emotions, ego, fear, inconsistent position sizing, tiredness & patience.
+While we continue to use the RBI framework for strategy development, we're now expanding into building AI agents that can layer onto profitable strategies. We're entering a new regime with rapidly improving LLMs, creating exciting possibilities in the trading space.
 
-i will still be running the RBI framework from the above section as a human in order to find new strategies that work in the past, but now i will have an additional path to build new algos that layers agents on to profitable strategies. 
+## 🗺️ Development Roadmap
 
-this is a new regime we have never seen before and the llms are only getting better. literally no one knows what the future holds, and that is exciting to me so i will spend my time building this ai agent platform specifically for trading, no funny business
+### 1. Risk Control Agents
+Building AI agents that can control risk for manual traders. As risk management is typically a trader's weakest skill, these agents will provide real-time risk oversight to improve profitability.
 
-**steps to complete**
+### 2. Exit Agents
+Developing agents specialized in position exit timing. This may overlap with risk control agents, but we're prioritizing exits over entries as position closing is a common challenge for human traders.
 
-1. risk control agents - build ai agents that can control risk for manual traders - as every trader’s worst skill is managing risk, if we build a way to have ai agents constantly running with hand traders, this should instantly make them more profitable. most will still override the agents and lose money, but its the first step in building ai agent to trade
-2. exit agents - build out these agents to know when to exit. this may be kinda encapsulated in the risk control agents, but we are starting with exits opposed to entries as humans tend to have a hard time closing positions, so we need to make sure that the agents master this before entering positions
-3. entry agents - build out entries, as they are less important than the exit. not necessarily, but want to make sure they can manage risk and exit first. 
-4. sentiment collecting agents - we can use twitter, discord, telegram in order to get sentiment of the markets and have these agents use that to either trend or counter trend the overall sentiment
-5. strategy executing agents - once we have the above risk controls, entries and exits finished, we can start layering in profitable strategies that the agents can trade. this opens the door for something interesting which is giving final decision power to the agent of whether or not it will take a trade that a system says to take. this could be good or bad. but no one knows until we test it. cool things like multi agent consensus on profitable strategies is a blue ocean that not even [Jim Simons](https://en.wikipedia.org/wiki/Jim_Simons) was able to test out. thats exciting
+### 3. Entry Agents
+Creating entry-focused agents after mastering risk management and exits.
+
+### 4. Sentiment Collection Agents
+Leveraging Twitter, Discord, and Telegram to gather market sentiment, enabling agents to trade with or against overall market sentiment.
+
+### 5. Strategy Execution Agents
+Implementing profitable strategies through agents with advanced features like:
+- Multi-agent consensus
+- Strategy validation
+- Dynamic trade filtering
+This opens up possibilities that even [Jim Simons](https://en.wikipedia.org/wiki/Jim_Simons) couldn't explore.
+
+## ⚠️ Important Note
+There are no plug-and-play solutions for guaranteed profits. Success depends on the deployed strategies. Please read the disclaimer below.
+
+## 👂 Looking for Updates?
+If someone asks about our 2025 roadmap, direct them to [moondev.com](http://moondev.com) and this AI Agents for Trading Section.
+
+## 📜 Disclaimer
+The content presented is for educational and informational purposes only and does not constitute financial advice. All trading involves risk and may not be suitable for all investors. You should carefully consider your investment objectives, level of experience, and risk appetite before investing.
+
+Past performance is not indicative of future results. There is no guarantee that any trading strategy or algorithm discussed will result in profits or will not incur losses.
+
+**CFTC Disclaimer:** Commodity Futures Trading Commission (CFTC) regulations require disclosure of the risks associated with trading commodities and derivatives. There is a substantial risk of loss in trading and investing.
+
+I am not a licensed financial advisor or a registered broker-dealer. Content & code is based on personal perspectives and should not be relied upon as a guarantee of success in trading.
+
+## 🔗 Links
+- Automate your trading: [https://algotradecamp.com](https://algotradecamp.com)
+- Business Contact: moon@algotradecamp.com
 
 ---
+*Built with 🌙 by Moon Dev - Pioneering the future of AI-powered trading*
 
-🦻🏽if someone asks what im doing on these lives for this year, 2025, direct them to the roadmap at [moondev.com](http://moondev.com) and then this AI Agents for Trading Section.
+[![Moon Dev](moondev.png)](https://www.moondev.com/)
