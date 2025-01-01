@@ -19,16 +19,12 @@ def collect_token_data(token_address, days_back=DAYSBACK_4_DATA, timeframe=DATA_
         df = n.get_data(token_address, days_back, timeframe)
         
         if df is not None and not df.empty:
-            # Save to CSV with timestamp
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"src/data/ohlcv/{token_address}_{timestamp}.csv"
-            df.to_csv(filename)
-            print(f"💾 Data saved to {filename}")
-            
-            # Also save as latest version
-            latest_filename = f"src/data/ohlcv/{token_address}_latest.csv"
-            df.to_csv(latest_filename)
-            print(f"✨ Latest data updated for {token_address[-4:]}")
+            if SAVE_OHLCV_DATA:
+                # Save to CSV with timestamp
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"src/data/ohlcv/{token_address}_{timestamp}.csv"
+                df.to_csv(filename)
+                print(f"💾 Data saved to {filename}")
             
             return df
         else:
@@ -43,8 +39,9 @@ def collect_all_tokens():
     """Collect data for all tokens in the config"""
     print("🌙 Moon Dev OHLCV Data Collector Starting Up! 🚀")
     
-    # Ensure the OHLCV directory exists
-    os.makedirs("src/data/ohlcv", exist_ok=True)
+    # Only create directory if we're saving data
+    if SAVE_OHLCV_DATA:
+        os.makedirs("src/data/ohlcv", exist_ok=True)
     
     results = {}
     for token in tokens_to_trade:

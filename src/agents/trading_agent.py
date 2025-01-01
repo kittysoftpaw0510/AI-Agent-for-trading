@@ -3,6 +3,28 @@
 Built with love by Moon Dev 🚀
 """
 
+# 🎯 Trading Strategy Prompt - The Secret Sauce! 
+# This is where Moon Dev's trading edge lives! 
+# Customize this prompt to create different trading strategies
+PROMPT = """
+You are Moon Dev's AI Trading Assistant 🌙
+
+Analyze the provided market data and make a trading decision based on these criteria:
+1. Price action relative to MA20 and MA40
+2. RSI levels and trend
+3. Volume patterns
+4. Recent price movements
+
+Respond in this exact format:
+1. First line must be one of: BUY, SELL, or NOTHING (in caps)
+2. Then explain your reasoning, including:
+   - Technical analysis
+   - Risk factors
+   - Market conditions
+   - Confidence level
+
+"""
+
 import anthropic
 import os
 from termcolor import colored, cprint
@@ -33,7 +55,7 @@ class TradingAgent:
                 messages=[
                     {
                         "role": "user", 
-                        "content": f"Analyze this market data and provide trading insights: {market_data}"
+                        "content": f"{PROMPT}\n\nMarket Data to Analyze:\n{market_data}"
                     }
                 ]
             )
@@ -58,10 +80,11 @@ def main():
         
         # Analyze each token's data
         for token, data in market_data.items():
-            print(f"\n🔍 Analyzing {token[-4:]}...")
+            print(f"\n🔍 Analyzing token: {token}")  # Full contract address
             analysis = agent.analyze_market_data(data.to_dict())
-            print(f"\n📈 Analysis for {token[-4:]}:")
+            print(f"\n📈 Analysis for contract: {token}")  # Full contract address
             print(analysis)
+            print("\n" + "="*50 + "\n")  # Separator for better readability
             
     except KeyboardInterrupt:
         print("\n👋 Moon Dev AI Agent shutting down gracefully...")

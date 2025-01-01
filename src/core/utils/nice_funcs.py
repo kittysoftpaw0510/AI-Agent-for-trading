@@ -384,17 +384,6 @@ def get_data(address, days_back_4_data, timeframe):
         df.to_csv(temp_file)
         print(f"🔄 Moon Dev cached data for {address[:4]}")
 
-        # Save permanently if enabled
-        if SAVE_OHLCV_DATA:
-            try:
-                os.makedirs('data/ohlcv', exist_ok=True)
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"data/ohlcv/{address}_{timestamp}.csv"
-                df.to_csv(filename)
-                print(f"💾 Moon Dev saved permanent data for {address[:4]}")
-            except Exception as e:
-                print(f"❌ Error saving permanent data: {str(e)}")
-
         # Calculate indicators
         df['MA20'] = ta.sma(df['Close'], length=20)
         df['RSI'] = ta.rsi(df['Close'], length=14)
