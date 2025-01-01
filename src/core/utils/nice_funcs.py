@@ -19,18 +19,30 @@ from datetime import datetime, timedelta
 from termcolor import colored, cprint
 import solders
 from dotenv import load_dotenv
+import shutil
+import atexit
 
 # Load environment variables
 load_dotenv()
 
 # Get API keys from environment
-API_KEY = os.getenv("BIRDEYE_API_KEY")
-if not API_KEY:
+BIRDEYE_API_KEY = os.getenv("BIRDEYE_API_KEY")
+if not BIRDEYE_API_KEY:
     raise ValueError("🚨 BIRDEYE_API_KEY not found in environment variables!")
 
 sample_address = "2yXTyarttn2pTZ6cwt4DqmrRuBw1G7pmFv9oT6MStdKP"
 
 BASE_URL = "https://public-api.birdeye.so/defi"
+
+# Create temp directory and register cleanup
+os.makedirs('temp_data', exist_ok=True)
+
+def cleanup_temp_data():
+    if os.path.exists('temp_data'):
+        print("🧹 Moon Dev cleaning up temporary data...")
+        shutil.rmtree('temp_data')
+
+atexit.register(cleanup_temp_data)
 
 # Custom function to print JSON in a human-readable format
 def print_pretty_json(data):
@@ -51,10 +63,8 @@ def token_overview(address):
     """
 
     print(f'Getting the token overview for {address}')
-    API_KEY = d.birdeye
-    BASE_URL = "https://public-api.birdeye.so/defi"
     overview_url = f"{BASE_URL}/token_overview?address={address}"
-    headers = {"X-API-KEY": API_KEY}
+    headers = {"X-API-KEY": BIRDEYE_API_KEY}
 
     response = requests.get(overview_url, headers=headers)
     result = {}
@@ -174,7 +184,7 @@ def token_security_info(address):
 
     # API endpoint for getting token security information
     url = f"{BASE_URL}/token_security?address={address}"
-    headers = {"X-API-KEY": API_KEY}
+    headers = {"X-API-KEY": BIRDEYE_API_KEY}
 
     # Sending a GET request to the API
     response = requests.get(url, headers=headers)
@@ -200,7 +210,7 @@ def token_creation_info(address):
     '''
     # API endpoint for getting token creation information
     url = f"{BASE_URL}/token_creation_info?address={address}"
-    headers = {"X-API-KEY": API_KEY}
+    headers = {"X-API-KEY": BIRDEYE_API_KEY}
 
     # Sending a GET request to the API
     response = requests.get(url, headers=headers)
@@ -330,9 +340,15 @@ def get_time_range(days_back):
 def get_data(address, days_back_4_data, timeframe):
     time_from, time_to = get_time_range(days_back_4_data)
 
+    # Check temp data first
+    temp_file = f"temp_data/{address}_latest.csv"
+    if os.path.exists(temp_file):
+        print(f"📂 Moon Dev found cached data for {address[:4]}")
+        return pd.read_csv(temp_file)
+
     url = f"https://public-api.birdeye.so/defi/ohlcv?address={address}&type={timeframe}&time_from={time_from}&time_to={time_to}"
 
-    headers = {"X-API-KEY": d.birdeye}
+    headers = {"X-API-KEY": BIRDEYE_API_KEY}
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         json_response = response.json()
@@ -349,13 +365,13 @@ def get_data(address, days_back_4_data, timeframe):
 
         df = pd.DataFrame(processed_data)
 
-        # Remove any rows with dates far in the future (like 2024-12)
+        # Remove any rows with dates far in the future
         current_date = datetime.now()
         df['datetime_obj'] = pd.to_datetime(df['Datetime (UTC)'])
         df = df[df['datetime_obj'] <= current_date]
-        df = df.drop('datetime_obj', axis=1)  # Clean up the temporary column
+        df = df.drop('datetime_obj', axis=1)
 
-        # Check if the DataFrame has fewer than 40 rows
+        # Pad if needed
         if len(df) < 40:
             print(f"🌙 MoonDev Alert: Padding data to ensure minimum 40 rows for analysis! 🚀")
             rows_to_add = 40 - len(df)
@@ -363,6 +379,21 @@ def get_data(address, days_back_4_data, timeframe):
             df = pd.concat([first_row_replicated, df], ignore_index=True)
 
         print(f"📊 MoonDev's Data Analysis Ready! Processing {len(df)} candles... 🎯")
+
+        # Always save to temp for current run
+        df.to_csv(temp_file)
+        print(f"🔄 Moon Dev cached data for {address[:4]}")
+
+        # Save permanently if enabled
+        if SAVE_OHLCV_DATA:
+            try:
+                os.makedirs('data/ohlcv', exist_ok=True)
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"data/ohlcv/{address}_{timestamp}.csv"
+                df.to_csv(filename)
+                print(f"💾 Moon Dev saved permanent data for {address[:4]}")
+            except Exception as e:
+                print(f"❌ Error saving permanent data: {str(e)}")
 
         # Calculate indicators
         df['MA20'] = ta.sma(df['Close'], length=20)
@@ -376,13 +407,15 @@ def get_data(address, days_back_4_data, timeframe):
         return df
     else:
         print(f"❌ MoonDev Error: Failed to fetch data for address {address}. Status code: {response.status_code}")
+        if response.status_code == 401:
+            print("🔑 Check your BIRDEYE_API_KEY in .env file!")
         return pd.DataFrame()
 
 
 
 def fetch_wallet_holdings_og(address):
 
-    API_KEY = d.birdeye  # Assume this is your API key; replace it with the actual one
+    API_KEY = BIRDEYE_API_KEY  # Assume this is your API key; replace it with the actual one
 
     # Initialize an empty DataFrame
     df = pd.DataFrame(columns=['Mint Address', 'Amount', 'USD Value'])
@@ -431,9 +464,8 @@ def fetch_wallet_token_single(address, token_mint_address):
 
 
 def token_price(address):
-    API_KEY = d.birdeye
     url = f"https://public-api.birdeye.so/defi/price?address={address}"
-    headers = {"X-API-KEY": API_KEY}
+    headers = {"X-API-KEY": BIRDEYE_API_KEY}
     response = requests.get(url, headers=headers)
     price_data = response.json()
 
@@ -518,7 +550,7 @@ def pnl_close(token_mint_address):
 
     ''' this will check to see if price is > sell 1, sell 2, sell 3 and sell accordingly '''
 
-    print(f'checking pnl close to see if its time to exit for {token_mint_address[-4:]}...')
+    print(f'checking pnl close to see if its time to exit for {token_mint_address[:4]}...')
     # check solana balance
 
 
@@ -546,17 +578,17 @@ def pnl_close(token_mint_address):
     while usd_value > tp:
 
 
-        cprint(f'for {token_mint_address[-4:]} value is {usd_value} and tp is {tp} so closing...', 'white', 'on_green')
+        cprint(f'for {token_mint_address[:4]} value is {usd_value} and tp is {tp} so closing...', 'white', 'on_green')
         try:
 
             market_sell(token_mint_address, sell_size)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_green')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_green')
             time.sleep(2)
             market_sell(token_mint_address, sell_size)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_green')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_green')
             time.sleep(2)
             market_sell(token_mint_address, sell_size)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_green')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_green')
             time.sleep(15)
 
         except:
@@ -587,19 +619,19 @@ def pnl_close(token_mint_address):
             sell_size = balance
             sell_size = int(sell_size * 10 **decimals)
 
-            cprint(f'for {token_mint_address[-4:]} value is {usd_value} and sl is {sl} so closing as a loss...', 'white', 'on_blue')
+            cprint(f'for {token_mint_address[:4]} value is {usd_value} and sl is {sl} so closing as a loss...', 'white', 'on_blue')
 
             #print(f'for {token_mint_address[-4:]} value is {usd_value} and tp is {tp} so closing...')
             try:
 
                 market_sell(token_mint_address, sell_size)
-                cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+                cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
                 time.sleep(1)
                 market_sell(token_mint_address, sell_size)
-                cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+                cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
                 time.sleep(1)
                 market_sell(token_mint_address, sell_size)
-                cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+                cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
                 time.sleep(15)
 
             except:
@@ -618,16 +650,16 @@ def pnl_close(token_mint_address):
 
             # break the loop if usd_value is 0
             if usd_value == 0:
-                print(f'successfully closed {token_mint_address[-4:]} usd_value is {usd_value} so breaking loop AFTER putting it on my dont_overtrade.txt...')
+                print(f'successfully closed {token_mint_address[:4]} usd_value is {usd_value} so breaking loop AFTER putting it on my dont_overtrade.txt...')
                 with open('dont_overtrade.txt', 'a') as file:
                     file.write(token_mint_address + '\n')
                 break
 
         else:
-            print(f'for {token_mint_address[-4:]} value is {usd_value} and tp is {tp} so not closing...')
+            print(f'for {token_mint_address[:4]} value is {usd_value} and tp is {tp} so not closing...')
             #time.sleep(10)
     else:
-        print(f'for {token_mint_address[-4:]} value is {usd_value} and tp is {tp} so not closing...')
+        print(f'for {token_mint_address[:4]} value is {usd_value} and tp is {tp} so not closing...')
 
 def chunk_kill(token_mint_address, max_usd_sell_size, slippage):
 
@@ -670,13 +702,13 @@ def chunk_kill(token_mint_address, max_usd_sell_size, slippage):
         try:
 
             market_sell(token_mint_address, sell_size, slippage)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
             time.sleep(1)
             market_sell(token_mint_address, sell_size, slippage)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
             time.sleep(1)
             market_sell(token_mint_address, sell_size, slippage)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
             time.sleep(15)
 
         except:
@@ -708,7 +740,7 @@ def chunk_kill(token_mint_address, max_usd_sell_size, slippage):
 
 
     else:
-        print(f'for {token_mint_address[-4:]} value is {usd_value} ')
+        print(f'for {token_mint_address[:4]} value is {usd_value} ')
         #time.sleep(10)
 
     print('closing position in full...')
@@ -752,13 +784,13 @@ def kill_switch(token_mint_address):
         try:
 
             market_sell(token_mint_address, sell_size)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
             time.sleep(1)
             market_sell(token_mint_address, sell_size)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
             time.sleep(1)
             market_sell(token_mint_address, sell_size)
-            cprint(f'just made an order {token_mint_address[-4:]} selling {sell_size} ...', 'white', 'on_blue')
+            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
             time.sleep(15)
 
         except:
@@ -786,7 +818,7 @@ def kill_switch(token_mint_address):
 
 
     else:
-        print(f'for {token_mint_address[-4:]} value is {usd_value} ')
+        print(f'for {token_mint_address[:4]} value is {usd_value} ')
         #time.sleep(10)
 
     print('closing position in full...')
@@ -891,7 +923,7 @@ def elegant_entry(symbol, buy_under):
             for i in range(orders_per_open):
                 market_buy(symbol, chunk_size, slippage)
                 # cprint green background black text
-                cprint(f'chunk buy submitted of {symbol[-4:]} sz: {chunk_size} you my dawg moon dev', 'white', 'on_blue')
+                cprint(f'chunk buy submitted of {symbol[:4]} sz: {chunk_size} you my dawg moon dev', 'white', 'on_blue')
                 time.sleep(1)
 
             time.sleep(tx_sleep)
@@ -913,7 +945,7 @@ def elegant_entry(symbol, buy_under):
                 for i in range(orders_per_open):
                     market_buy(symbol, chunk_size, slippage)
                     # cprint green background black text
-                    cprint(f'chunk buy submitted of {symbol[-4:]} sz: {chunk_size} you my dawg moon dev', 'white', 'on_blue')
+                    cprint(f'chunk buy submitted of {symbol[:4]} sz: {chunk_size} you my dawg moon dev', 'white', 'on_blue')
                     time.sleep(1)
 
                 time.sleep(tx_sleep)
@@ -991,7 +1023,7 @@ def breakout_entry(symbol, BREAKOUT_PRICE):
             for i in range(orders_per_open):
                 market_buy(symbol, chunk_size, slippage)
                 # cprint green background black text
-                cprint(f'chunk buy submitted of {symbol[-4:]} sz: {chunk_size} you my dawg moon dev', 'white', 'on_blue')
+                cprint(f'chunk buy submitted of {symbol[:4]} sz: {chunk_size} you my dawg moon dev', 'white', 'on_blue')
                 time.sleep(1)
 
             time.sleep(tx_sleep)
@@ -1013,7 +1045,7 @@ def breakout_entry(symbol, BREAKOUT_PRICE):
                 for i in range(orders_per_open):
                     market_buy(symbol, chunk_size, slippage)
                     # cprint green background black text
-                    cprint(f'chunk buy submitted of {symbol[-4:]} sz: {chunk_size} you my dawg moon dev', 'white', 'on_blue')
+                    cprint(f'chunk buy submitted of {symbol[:4]} sz: {chunk_size} you my dawg moon dev', 'white', 'on_blue')
                     time.sleep(1)
 
                 time.sleep(tx_sleep)

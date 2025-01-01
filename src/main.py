@@ -4,6 +4,9 @@ Main entry point for the trading system
 Built with love by Moon Dev 🚀
 """
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.agents.trading_agent import main as run_agent
 
 if __name__ == "__main__":

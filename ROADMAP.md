@@ -1,85 +1,56 @@
+# 🌙 Moon Dev AI Trading System Roadmap
 
-- Never work directly on `main`
-- Create new features on branches:
-  ```bash
-  git checkout -b feature/risk-control-agent
-  ```
+## Phase 1: Foundation ✅
+- [x] Project structure setup
+- [x] Environment variable configuration
+- [x] API key management
+- [x] Basic OHLCV data collection
+- [x] Multi-token monitoring setup
+- [x] Temporary data storage system
+- [x] Token display improvements
 
-### 2. Development Process
-1. Start each feature:
-   ```bash
-   git checkout develop
-   git pull
-   git checkout -b feature/new-feature
-   ```
+## Phase 2: Core Trading Infrastructure 🚧
+- [x] Market buy/sell functionality
+- [x] Position management
+- [x] Slippage control
+- [x] Transaction retry logic
+- [ ] Risk management system
+- [ ] Portfolio-wide analysis
+- [ ] Advanced order types
 
-2. Work on your code
-3. Commit regularly:
-   ```bash
-   git add .
-   git commit -m "✨ Added new risk control feature"
-   ```
+## Phase 3: AI Integration 🤖
+- [x] Basic AI model setup
+- [ ] Risk assessment agent
+- [ ] Entry/exit strategy agent
+- [ ] Sentiment analysis agent
+- [ ] Multi-agent coordination
+- [ ] Portfolio optimization agent
 
-4. Push feature:
-   ```bash
-   git push origin feature/new-feature
-   ```
+## Phase 4: Advanced Features 🔮
+- [ ] Real-time market analysis
+- [ ] Social sentiment integration
+- [ ] Advanced risk metrics
+- [ ] Performance analytics
+- [ ] Automated reporting
 
-5. Create Pull Request on GitHub to merge into `develop`
+## Phase 5: Optimization & Scaling 🚀
+- [ ] Performance optimization
+- [ ] Multi-chain support
+- [ ] Advanced portfolio strategies
+- [ ] Automated rebalancing
+- [ ] Emergency protocols
 
-## 🎯 Best Practices
+## Current Focus 🎯
+- Implementing risk control agent
+- Enhancing multi-token coordination
+- Developing portfolio analysis system
+- Improving data management
 
-### Code Organization
-1. Keep modules small and focused
-2. Use clear naming conventions
-3. Document with docstrings
-4. Add print statements for debugging:
-   ```python
-   print(f"🌙 Moon Dev Debug: Processing trade signal: {signal}")
-   ```
+## Future Considerations 🌠
+- Cross-chain integration
+- Advanced ML models
+- Real-time sentiment analysis
+- Automated strategy adjustment
+- Community integration
 
-### Git Commits
-- Use emoji prefixes:
-  - ✨ New feature
-  - 🐛 Bug fix
-  - 📚 Documentation
-  - ⚡️ Performance
-  - 🧪 Tests
-
-### Testing
-1. Write tests for new features
-2. Run tests before commits
-3. Use pytest for testing
-
-## 📝 Development Steps
-
-1. **Setup Phase**
-   - [x] Initialize repository
-   - [x] Create README
-   - [x] Set up project structure
-   - [ ] Create requirements.txt
-
-2. **Core Development**
-   - [ ] Build risk control agent
-   - [ ] Develop exit strategy agent
-   - [ ] Create entry agent
-   - [ ] Implement sentiment analysis
-   - [ ] Design strategy execution
-
-3. **Testing & Documentation**
-   - [ ] Write unit tests
-   - [ ] Create usage examples
-   - [ ] Document API
-   - [ ] Add installation guide
-
-## 🔑 Remember
-- Commit often (start w/ main and grow to dev if ever needed)
-- Use clear commit messages
-- Test before pushing
-- Document as you go
-- Keep security in mind (no API keys!)
-- make a .gitignore to add .env to
-- new people = new branch
-
-## resources
-- https://github.com/huggingface/smolagents
+*This roadmap is maintained by Moon Dev and serves as a guide for AI agents in understanding project progression* 🤖✨

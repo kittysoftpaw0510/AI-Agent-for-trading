@@ -4,6 +4,22 @@ All the magic numbers and settings live here!
 Remember: Moon Dev says always be careful with your config! 🚀
 """
 
+# Token List for Trading 📋
+MONITORED_TOKENS = [
+    '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump',    # 🌬️ FART
+    'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',    # 💵 USDC
+    'HeLp6NuQkmYB4pYWo2zYs22mESHXPQYzXbB8n4V98jwC',    # 🤖 AI16Z
+    'v62Jv9pwMTREWV9f6TetZfMafV254vo99p7HSF25BPr',     # 🎮 GG Solana
+    '8x5VqbHA8D7NkD52uNuS5nnt3PwA3pLD34ymskeSo2Wn',    # 🧠 ZEREBRO
+    'Df6yfrKC8kZE3KNkrHERKzAetSxbrWeniQfyJY4Jpump',    # 😎 CHILL GUY
+    'ED5nyyWEzpPPiWimP8vYm7sD7TD3LAt3Q3gRTWHzPJBY',    # 🌙 MOODENG
+    'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',    # 🐕 WIF
+]
+
+# Moon Dev's Token Trading List 🚀
+# Each token is carefully selected by Moon Dev for maximum moon potential! 🌙
+tokens_to_trade = MONITORED_TOKENS  # Using the same list for trading
+
 # Token and wallet settings
 symbol = '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump'
 address = '4wgfCBf2WwLSRKLef9iW7JXZ2AfkxUxGM4XcKpHm3Sin'
@@ -31,17 +47,13 @@ SLEEP_AFTER_CLOSE = 600  # Prevent overtrading
 # Data collection settings 📈
 DAYSBACK_4_DATA = 10
 DATA_TIMEFRAME = '15m'
+SAVE_OHLCV_DATA = False  # 🌙 Set to True to save data permanently, False will only use temp data during run
 
 # AI Model Settings 🤖
-AI_MODEL = "claude-3-sonnet-20240229"  # Claude model to use
+AI_MODEL = "claude-3-sonnet-20240229"  # Claude model to use: claude-3-sonnet-20240229, claude-3-haiku-20240307, claude-3-opus-20240229
 AI_MAX_TOKENS = 1024  # Max tokens for response
 AI_TEMPERATURE = 0.7  # Creativity vs precision (0-1)
 
-# Token List for Trading 📋
-tokens_to_trade = [
-    '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump',  # Example token
-    # Add more tokens here
-]
 
 # Future variables (not active yet) 🔮
 sell_at_multiple = 3

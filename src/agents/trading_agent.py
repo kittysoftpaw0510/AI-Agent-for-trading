@@ -4,11 +4,11 @@ Built with love by Moon Dev 🚀
 """
 
 import anthropic
-from src.core.config import *
-from src.data.ohlcv_collector import collect_all_tokens
 import os
 from termcolor import colored, cprint
 from dotenv import load_dotenv
+from ..core.config import *
+from ..data.ohlcv_collector import collect_all_tokens
 
 # Load environment variables
 load_dotenv()
