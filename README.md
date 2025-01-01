@@ -1,60 +1,77 @@
 # 🤖 AI AGENTS FOR TRADING
 
-The main mission is to build [artificial financial intelligence](https://www.afi.xyz) - a focused version of AGI specifically for trading and investing.
+**⚠️ IMPORTANT: This is an experimental project. There are NO guarantees of profitability. Trading involves substantial risk of loss.**
+
+This project explores the potential of [artificial financial intelligence](https://www.afi.xyz) - a focused implementation of AI for trading and investing research.
 
 ## 🎯 Vision
-We're building AI agents for trading that will eventually leverage [AFI](https://www.afi.xyz). With 4 years of experience training humans to automate their trading through our [bootcamp](https://algotradecamp.com), we understand where AI agents can gain an edge over human limitations.
+We're researching AI agents for trading that may eventually leverage [AFI](https://www.afi.xyz). With 4 years of experience training humans through our [bootcamp](https://algotradecamp.com), we're exploring where AI agents might complement human trading operations. This is experimental research, not a profitable trading solution.
 
-## 💡 Key Advantage
-AI agents overcome the biggest challenges that plague human traders:
-- Emotions
-- Ego
-- Inconsistency
-- Fatigue
+## 💡 Concept
+AI agents might help address common trading challenges:
+- Emotional reactions
+- Ego-driven decisions
+- Inconsistent execution
+- Fatigue effects
 - Impatience
-- Fear & Greed
+- Fear & Greed cycles
 
-While we continue to use the RBI framework for strategy development, we're now expanding into building AI agents that can layer onto profitable strategies. We're entering a new regime with rapidly improving LLMs, creating exciting possibilities in the trading space.
+While we use the RBI framework for strategy research, we're exploring AI agents as potential tools. We're in early stages with LLM technology, investigating possibilities in the trading space.
 
-## 🗺️ Development Roadmap
+## 🗺️ Research Roadmap
 
 ### 1. Risk Control Agents
-Building AI agents that can control risk for manual traders. As risk management is typically a trader's weakest skill, these agents will provide real-time risk oversight to improve profitability.
+Exploring AI agents that could assist with risk management. This is purely experimental research into risk oversight possibilities.
 
 ### 2. Exit Agents
-Developing agents specialized in position exit timing. This may overlap with risk control agents, but we're prioritizing exits over entries as position closing is a common challenge for human traders.
+Researching potential exit timing assistance. This overlaps with risk management research but focuses on position management concepts.
 
 ### 3. Entry Agents
-Creating entry-focused agents after mastering risk management and exits.
+Investigating entry-focused concepts after risk management research.
 
 ### 4. Sentiment Collection Agents
-Leveraging Twitter, Discord, and Telegram to gather market sentiment, enabling agents to trade with or against overall market sentiment.
+Exploring ways to gather market sentiment from Twitter, Discord, and Telegram for research purposes.
 
 ### 5. Strategy Execution Agents
-Implementing profitable strategies through agents with advanced features like:
+Researching concepts like:
 - Multi-agent consensus
 - Strategy validation
 - Dynamic trade filtering
-This opens up possibilities that even [Jim Simons](https://en.wikipedia.org/wiki/Jim_Simons) couldn't explore.
 
-## ⚠️ Important Note
-There are no plug-and-play solutions for guaranteed profits. Success depends on the deployed strategies. Please read the disclaimer below.
+## ⚠️ Critical Disclaimers
+
+**PLEASE READ CAREFULLY:**
+
+1. This is an experimental research project, NOT a trading system
+2. There are NO plug-and-play solutions for guaranteed profits
+3. We do NOT provide trading strategies
+4. Success depends entirely on YOUR:
+   - Trading strategy
+   - Risk management
+   - Market research
+   - Testing and validation
+   - Overall trading approach
+
+5. NO AI agent can guarantee profitable trading
+6. You MUST develop and validate your own trading approach
+7. Trading involves substantial risk of loss
+8. Past performance does not indicate future results
 
 ## 👂 Looking for Updates?
-If someone asks about our 2025 roadmap, direct them to [moondev.com](http://moondev.com) and this AI Agents for Trading Section.
+Project updates will be posted on [moondev.com](http://moondev.com) in the AI Agents for Trading Section.
 
-## 📜 Disclaimer
+## 📜 Detailed Disclaimer
 The content presented is for educational and informational purposes only and does not constitute financial advice. All trading involves risk and may not be suitable for all investors. You should carefully consider your investment objectives, level of experience, and risk appetite before investing.
 
 Past performance is not indicative of future results. There is no guarantee that any trading strategy or algorithm discussed will result in profits or will not incur losses.
 
 **CFTC Disclaimer:** Commodity Futures Trading Commission (CFTC) regulations require disclosure of the risks associated with trading commodities and derivatives. There is a substantial risk of loss in trading and investing.
 
-I am not a licensed financial advisor or a registered broker-dealer. Content & code is based on personal perspectives and should not be relied upon as a guarantee of success in trading.
+I am not a licensed financial advisor or a registered broker-dealer. Content & code is based on personal research perspectives and should not be relied upon as a guarantee of success in trading.
 
 ## 🔗 Links
-- Automate your trading: [https://algotradecamp.com](https://algotradecamp.com)
-- Business Contact: moon@algotradecamp.com
+- Trading Education: [https://algotradecamp.com](https://algotradecamp.com)
+- Business
 
 ---
 *Built with love by Moon Dev - Pioneering the future of AI-powered trading*
