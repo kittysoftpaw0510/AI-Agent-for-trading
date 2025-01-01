@@ -57,6 +57,6 @@ I am not a licensed financial advisor or a registered broker-dealer. Content & c
 - Business Contact: moon@algotradecamp.com
 
 ---
-*Built with 🌙 by Moon Dev - Pioneering the future of AI-powered trading*
+*Built with love by Moon Dev - Pioneering the future of AI-powered trading*
 
 [![Moon Dev](moondev.png)](https://www.moondev.com/)
