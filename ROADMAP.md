@@ -80,3 +80,6 @@
 - Keep security in mind (no API keys!)
 - make a .gitignore to add .env to
 - new people = new branch
+
+## resources
+- https://github.com/huggingface/smolagents
