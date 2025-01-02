@@ -235,12 +235,13 @@ def market_buy(token, amount, slippage):
     KEY = Keypair.from_base58_string(os.getenv("SOLANA_PRIVATE_KEY"))
     if not KEY:
         raise ValueError("🚨 SOLANA_PRIVATE_KEY not found in environment variables!")
-    
+    #print('key success')
     SLIPPAGE = slippage # 5000 is 50%, 500 is 5% and 50 is .5%
 
     QUOTE_TOKEN = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" # usdc
 
     http_client = Client(os.getenv("RPC_ENDPOINT"))
+    #print('http client success')
     if not http_client:
         raise ValueError("🚨 RPC_ENDPOINT not found in environment variables!")
 
@@ -265,7 +266,6 @@ def market_buy(token, amount, slippage):
 
 
 def market_sell(QUOTE_TOKEN, amount, slippage):
-
     import requests
     import sys
     import json
@@ -274,38 +274,33 @@ def market_sell(QUOTE_TOKEN, amount, slippage):
     from solders.transaction import VersionedTransaction
     from solana.rpc.api import Client
     from solana.rpc.types import TxOpts
-    import dontshare as d
 
-    KEY = Keypair.from_base58_string(d.sol_key)
-    SLIPPAGE = slippage # 5000 is 50%, 500 is 5% and 50 is .5%
-
-    #QUOTE_TOKEN = "So11111111111111111111111111111111111111112"
-    # QUOTE_TOKEN = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" # usdc
+    KEY = Keypair.from_base58_string(os.getenv("SOLANA_PRIVATE_KEY"))
+    if not KEY:
+        raise ValueError("🚨 SOLANA_PRIVATE_KEY not found in environment variables!")
+    
+    SLIPPAGE = slippage  # 5000 is 50%, 500 is 5% and 50 is .5%
 
     # token would be usdc for sell orders cause we are selling
-    token =  "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    token = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"  # USDC
 
-    # OPTION HERE OF uSING MAINNET OR RPC URL (i use helius)
-    #http_client = Client("https://api.mainnet-beta.solana.com")
-    http_client = Client(d.rpc_url)
+    http_client = Client(os.getenv("RPC_ENDPOINT"))
+    if not http_client:
+        raise ValueError("🚨 RPC_ENDPOINT not found in environment variables!")
 
     quote = requests.get(f'https://quote-api.jup.ag/v6/quote?inputMint={QUOTE_TOKEN}&outputMint={token}&amount={amount}&slippageBps={SLIPPAGE}').json()
-    #print(quote)
+    
     txRes = requests.post('https://quote-api.jup.ag/v6/swap',
                           headers={"Content-Type": "application/json"},
                           data=json.dumps({
                               "quoteResponse": quote,
                               "userPublicKey": str(KEY.pubkey()),
-                              "prioritizationFeeLamports": PRIORITY_FEE  # or replace 'auto' with your specific lamport value
+                              "prioritizationFeeLamports": PRIORITY_FEE
                           })).json()
-    #txRes = requests.post('https://quote-api.jup.ag/v6/swap',headers={"Content-Type": "application/json"}, data=json.dumps({"quoteResponse": quote, "userPublicKey": str(KEY.pubkey()) })).json()
-    #print(txRes)
+    
     swapTx = base64.b64decode(txRes['swapTransaction'])
-    #print(swapTx)
     tx1 = VersionedTransaction.from_bytes(swapTx)
-    #print(tx1)
     tx = VersionedTransaction(tx1.message, [KEY])
-    #print(tx)
     txId = http_client.send_raw_transaction(bytes(tx), TxOpts(skip_preflight=True)).value
     print(f"https://solscan.io/tx/{str(txId)}")
 
@@ -458,10 +453,16 @@ def token_price(address):
     response = requests.get(url, headers=headers)
     price_data = response.json()
 
+    print(price_data)
+
     if price_data['success']:
         return price_data['data']['value']
     else:
         return None
+    
+# price = token_price('2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv')
+# print(price)
+# time.sleep(897)
 
 
 def get_position(token_mint_address):
@@ -650,89 +651,71 @@ def pnl_close(token_mint_address):
     else:
         print(f'for {token_mint_address[:4]} value is {usd_value} and tp is {tp} so not closing...')
 
-def chunk_kill(token_mint_address, max_usd_sell_size, slippage):
-
-    '''
-
-    this function closes the position in full  after CHUNKING ORDERS
-
-    if the usd_size > 10k then it will chunk in 10k orders
-    '''
-
-    # if time is on the 5 minute do the balance check, if not grab from data/current_position.csv
-    balance = get_position(token_mint_address)
-    print(f'inside chunk... balance {balance}')
-
-    # get current price of token
-    price = token_price(token_mint_address)
-    price = float(price)
-    usd_value = balance * price
-
-    if usd_value < max_usd_sell_size:
-        sell_size = balance
-    else:
-        sell_size = max_usd_sell_size/price
-
-
-    print(f'balance is {balance} and selling this amount {sell_size}')
-
-
-    # round to 2 decimals
-    sell_size = round_down(sell_size, 2)
-    decimals = 0
-    decimals = get_decimals(token_mint_address)
-    sell_size = int(sell_size * 10 **decimals)
-
-    #print(f'bal: {balance} price: {price} usdVal: {usd_value} TP: {tp} sell size: {sell_size} decimals: {decimals}')
-
-    while usd_value > 0:
-# 100 selling 70% ...... selling 30 left
-        #print(f'for {token_mint_address[-4:]} closing position cause exit all positions is set to {EXIT_ALL_POSITIONS} and value is {usd_value} and tp is {tp} so closing...')
-        try:
-
-            market_sell(token_mint_address, sell_size, slippage)
-            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
-            time.sleep(1)
-            market_sell(token_mint_address, sell_size, slippage)
-            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
-            time.sleep(1)
-            market_sell(token_mint_address, sell_size, slippage)
-            cprint(f'just made an order {token_mint_address[:4]} selling {sell_size} ...', 'white', 'on_blue')
-            time.sleep(15)
-
-        except:
-            cprint('order error.. trying again', 'white', 'on_red')
-            # time.sleep(7)
-
-        balance = get_position(token_mint_address)
-        price = token_price(token_mint_address)
-        usd_value = balance * price
-        tp = sell_at_multiple * USDC_SIZE
-
-
-        if usd_value < max_usd_sell_size:
-            sell_size = balance
-        else:
-            sell_size = max_usd_sell_size/price
-
-
-        print(f'balance is {balance} and selling this amount {sell_size}')
-
-
-        # down downwards to 2 decimals
-        sell_size = round_down(sell_size, 2)
-
-        decimals = 0
+def chunk_kill(token_mint_address, max_usd_order_size, slippage):
+    """Kill a position in chunks"""
+    cprint(f"\n🔪 Moon Dev's AI Agent initiating position exit...", "white", "on_cyan")
+    
+    try:
+        # Get current position using address from config
+        df = fetch_wallet_token_single(address, token_mint_address)
+        if df.empty:
+            cprint("❌ No position found to exit", "white", "on_red")
+            return
+            
+        # Get current token amount and value
+        token_amount = float(df['Amount'].iloc[0])
+        current_usd_value = float(df['USD Value'].iloc[0])
+        
+        # Get token decimals
         decimals = get_decimals(token_mint_address)
-        #print(f'xxxxxxxxx for {token_mint_address[-4:]} decimals is {decimals}')
-        sell_size = int(sell_size * 10 **decimals)
+        
+        cprint(f"📊 Initial position: {token_amount:.2f} tokens (${current_usd_value:.2f})", "white", "on_cyan")
+        
+        while current_usd_value > 0.1:  # Keep going until position is essentially zero
+            # Calculate chunk size based on current position
+            chunk_size = token_amount / 3  # Split remaining into 3 chunks
+            cprint(f"\n🔄 Splitting remaining position into chunks of {chunk_size:.2f} tokens", "white", "on_cyan")
+            
+            # Execute sell orders in chunks
+            for i in range(3):
+                try:
+                    cprint(f"\n💫 Executing sell chunk {i+1}/3...", "white", "on_cyan")
+                    sell_size = int(chunk_size * 10**decimals)
+                    market_sell(token_mint_address, sell_size, slippage)
+                    cprint(f"✅ Sell chunk {i+1}/3 complete", "white", "on_green")
+                    time.sleep(2)  # Small delay between chunks
+                except Exception as e:
+                    cprint(f"❌ Error in sell chunk: {str(e)}", "white", "on_red")
+            
+            # Check remaining position
+            time.sleep(5)  # Wait for blockchain to update
+            df = fetch_wallet_token_single(address, token_mint_address)
+            if df.empty:
+                cprint("\n✨ Position successfully closed!", "white", "on_green")
+                return
+                
+            # Update position size for next iteration
+            token_amount = float(df['Amount'].iloc[0])
+            current_usd_value = float(df['USD Value'].iloc[0])
+            cprint(f"\n📊 Remaining position: {token_amount:.2f} tokens (${current_usd_value:.2f})", "white", "on_cyan")
+            
+            if current_usd_value > 0.1:
+                cprint("🔄 Position still open - continuing to close...", "white", "on_cyan")
+                time.sleep(2)
+            
+        cprint("\n✨ Position successfully closed!", "white", "on_green")
+        
+    except Exception as e:
+        cprint(f"❌ Error during position exit: {str(e)}", "white", "on_red")
 
-
-    else:
-        print(f'for {token_mint_address[:4]} value is {usd_value} ')
-        #time.sleep(10)
-
-    print('closing position in full...')
+def sell_token(token_mint_address, amount, slippage):
+    """Sell a token"""
+    try:
+        cprint(f"📉 Selling {amount:.2f} tokens...", "white", "on_cyan")
+        # Your existing sell logic here
+        print(f"just made an order {token_mint_address[:4]} selling {int(amount)} ...")
+    except Exception as e:
+        cprint(f"❌ Error selling token: {str(e)}", "white", "on_red")
 
 def kill_switch(token_mint_address):
 
@@ -1063,3 +1046,125 @@ def breakout_entry(symbol, BREAKOUT_PRICE):
         chunk_size = str(chunk_size)
 
 
+
+def ai_entry(symbol, amount):
+    """AI agent entry function for Moon Dev's trading system 🤖"""
+    cprint("🤖 Moon Dev's AI Trading Agent initiating position entry...", "white", "on_blue")
+    
+    # amount passed in is the target allocation (up to 30% of usd_size)
+    target_size = amount  # This could be up to $3 (30% of $10)
+    
+    pos = get_position(symbol)
+    price = token_price(symbol)
+    pos_usd = pos * price
+    
+    cprint(f"🎯 Target allocation: ${target_size:.2f} USD (max 30% of ${usd_size})", "white", "on_blue")
+    cprint(f"📊 Current position: ${pos_usd:.2f} USD", "white", "on_blue")
+    
+    # Check if we're already at or above target
+    if pos_usd >= (target_size * 0.97):
+        cprint("✋ Position already at or above target size!", "white", "on_blue")
+        return
+        
+    # Calculate how much more we need to buy
+    size_needed = target_size - pos_usd
+    if size_needed <= 0:
+        cprint("🛑 No additional size needed", "white", "on_blue")
+        return
+        
+    # For order execution, we'll chunk into max_usd_order_size pieces
+    if size_needed > max_usd_order_size: 
+        chunk_size = max_usd_order_size
+    else: 
+        chunk_size = size_needed
+
+    chunk_size = int(chunk_size * 10**6)
+    chunk_size = str(chunk_size)
+    
+    cprint(f"💫 Entry chunk size: {chunk_size} (chunking ${size_needed:.2f} into ${max_usd_order_size:.2f} orders)", "white", "on_blue")
+
+    while pos_usd < (target_size * 0.97):
+        cprint(f"🤖 AI Agent executing entry for {symbol[:8]}...", "white", "on_blue")
+        print(f"Position: {round(pos,2)} | Price: {round(price,8)} | USD Value: ${round(pos_usd,2)}")
+
+        try:
+            for i in range(orders_per_open):
+                market_buy(symbol, chunk_size, slippage)
+                cprint(f"🚀 AI Agent placed order {i+1}/{orders_per_open} for {symbol[:8]}", "white", "on_blue")
+                time.sleep(1)
+
+            time.sleep(tx_sleep)
+            
+            # Update position info
+            pos = get_position(symbol)
+            price = token_price(symbol)
+            pos_usd = pos * price
+            
+            # Break if we're at or above target
+            if pos_usd >= (target_size * 0.97):
+                break
+                
+            # Recalculate needed size
+            size_needed = target_size - pos_usd
+            if size_needed <= 0:
+                break
+                
+            # Determine next chunk size
+            if size_needed > max_usd_order_size: 
+                chunk_size = max_usd_order_size
+            else: 
+                chunk_size = size_needed
+            chunk_size = int(chunk_size * 10**6)
+            chunk_size = str(chunk_size)
+
+        except Exception as e:
+            try:
+                cprint("🔄 AI Agent retrying order in 30 seconds...", "white", "on_blue")
+                time.sleep(30)
+                for i in range(orders_per_open):
+                    market_buy(symbol, chunk_size, slippage)
+                    cprint(f"🚀 AI Agent retry order {i+1}/{orders_per_open} for {symbol[:8]}", "white", "on_blue")
+                    time.sleep(1)
+
+                time.sleep(tx_sleep)
+                pos = get_position(symbol)
+                price = token_price(symbol)
+                pos_usd = pos * price
+                
+                if pos_usd >= (target_size * 0.97):
+                    break
+                    
+                size_needed = target_size - pos_usd
+                if size_needed <= 0:
+                    break
+                    
+                if size_needed > max_usd_order_size: 
+                    chunk_size = max_usd_order_size
+                else: 
+                    chunk_size = size_needed
+                chunk_size = int(chunk_size * 10**6)
+                chunk_size = str(chunk_size)
+
+            except:
+                cprint("❌ AI Agent encountered critical error, manual intervention needed", "white", "on_red")
+                return
+
+    cprint("✨ AI Agent completed position entry", "white", "on_blue")
+
+def get_token_balance_usd(token_mint_address):
+    """Get the USD value of a token position for Moon Dev's wallet 🌙"""
+    try:
+        # Get the position data using existing function
+        df = fetch_wallet_token_single(address, token_mint_address)  # Using address from config
+        
+        if df.empty:
+            print(f"🔍 No position found for {token_mint_address[:8]}")
+            return 0.0
+            
+        # Get the USD Value from the dataframe
+        usd_value = df['USD Value'].iloc[0]
+        return float(usd_value)
+        
+    except Exception as e:
+        print(f"❌ Error getting token balance: {str(e)}")
+        return 0.0

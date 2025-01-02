@@ -5,54 +5,60 @@ Built with love by Moon Dev 🚀
 """
 
 from ..core.config import *
-from ..core.utils import nice_funcs as n
+from ..core import nice_funcs as n
 import pandas as pd
 from datetime import datetime
 import os
 from termcolor import colored, cprint
 import time
 
-def collect_token_data(token_address, days_back=DAYSBACK_4_DATA, timeframe=DATA_TIMEFRAME):
-    """Collect OHLCV data for a specific token"""
+def collect_token_data(token, days_back=DAYSBACK_4_DATA, timeframe=DATA_TIMEFRAME):
+    """Collect OHLCV data for a single token"""
+    cprint(f"\n🤖 Moon Dev's AI Agent fetching data for {token}...", "white", "on_blue")
+    
     try:
-        print(f"🔍 Moon Dev is fetching data for {token_address[-4:]} over {days_back} days...")
-        df = n.get_data(token_address, days_back, timeframe)
+        # Get data from Birdeye
+        data = n.get_data(token, days_back, timeframe)
         
-        if df is not None and not df.empty:
-            if SAVE_OHLCV_DATA:
-                # Save to CSV with timestamp
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"src/data/ohlcv/{token_address}_{timestamp}.csv"
-                df.to_csv(filename)
-                print(f"💾 Data saved to {filename}")
-            
-            return df
-        else:
-            print(f"❌ No data received for {token_address[-4:]}")
+        if data is None or data.empty:
+            cprint(f"❌ Moon Dev's AI Agent couldn't fetch data for {token}", "white", "on_red")
             return None
             
+        cprint(f"📊 Moon Dev's AI Agent processed {len(data)} candles for analysis", "white", "on_blue")
+        
+        # Save data if configured
+        if SAVE_OHLCV_DATA:
+            save_path = f"data/{token}_latest.csv"
+        else:
+            save_path = f"temp_data/{token}_latest.csv"
+            
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        
+        # Save to CSV
+        data.to_csv(save_path)
+        cprint(f"💾 Moon Dev's AI Agent cached data for {token[:4]}", "white", "on_green")
+        
+        return data
+        
     except Exception as e:
-        print(f"❌ Error collecting data for {token_address[-4:]}: {str(e)}")
+        cprint(f"❌ Moon Dev's AI Agent encountered an error: {str(e)}", "white", "on_red")
         return None
 
 def collect_all_tokens():
-    """Collect data for all tokens in the config"""
-    print("🌙 Moon Dev OHLCV Data Collector Starting Up! 🚀")
+    """Collect OHLCV data for all monitored tokens"""
+    market_data = {}
     
-    # Only create directory if we're saving data
-    if SAVE_OHLCV_DATA:
-        os.makedirs("src/data/ohlcv", exist_ok=True)
+    cprint("\n🔍 Moon Dev's AI Agent starting market data collection...", "white", "on_blue")
     
-    results = {}
-    for token in tokens_to_trade:
-        print(f"\n🌙 Moon Dev is working on {token[-4:]}...")
-        df = collect_token_data(token)
-        if df is not None:
-            results[token] = df
-        time.sleep(1)  # Be nice to the API
+    for token in MONITORED_TOKENS:
+        data = collect_token_data(token)
+        if data is not None:
+            market_data[token] = data
+            
+    cprint("\n✨ Moon Dev's AI Agent completed market data collection!", "white", "on_green")
     
-    print("\n✅ Moon Dev has finished collecting all token data!")
-    return results
+    return market_data
 
 if __name__ == "__main__":
     try:
