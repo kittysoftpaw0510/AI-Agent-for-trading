@@ -1,7 +1,5 @@
 # 🤖 AI AGENTS FOR TRADING
 
-[![Moon Dev](moondev.png)](https://www.moondev.com/)
-
 **⚠️ IMPORTANT: This is an experimental project. There are NO guarantees of profitability. Trading involves substantial risk of loss.**
 
 This project explores the potential of [artificial financial intelligence](https://www.afi.xyz) - a focused implementation of AI for trading and investing research.
@@ -58,9 +56,6 @@ Researching concepts like:
 6. You MUST develop and validate your own trading approach
 7. Trading involves substantial risk of loss
 8. Past performance does not indicate future results
-
-## 👂 Looking for Updates?
-Project updates will be posted on [moondev.com](http://moondev.com) in the AI Agents for Trading Section.
 
 ## 📜 Detailed Disclaimer
 The content presented is for educational and informational purposes only and does not constitute financial advice. All trading involves risk and may not be suitable for all investors. You should carefully consider your investment objectives, level of experience, and risk appetite before investing.
